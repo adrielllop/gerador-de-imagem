@@ -1,5 +1,8 @@
 const express=require("express"),path=require("path"),crypto=require("crypto");
-const app=express();app.use(express.json({limit:"2mb"}));
+const app=express();
+app.disable("x-powered-by");
+app.use(express.json({limit:"2mb"}));
+app.get("/api/version",(req,res)=>res.set("Cache-Control","no-store").json({version:"pixelia-hf-2.2",provider:"huggingface"}));
 const env=k=>{if(!process.env[k])throw Error(`Configure ${k} nas variáveis da Vercel.`);return process.env[k]};
 const discount=n=>n>=100?15:n>=50?12:n>=25?8:n>=10?5:0;
 const validDevice=s=>typeof s==="string"&&/^[0-9a-f-]{36}$/i.test(s);
