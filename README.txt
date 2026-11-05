@@ -24,3 +24,7 @@ Nunca exponha as chaves no HTML/JavaScript. Use somente variáveis de ambiente d
 
 CORREÇÃO DO ERRO PNPM:
 Se a Vercel mostrar ERR_PNPM_OUTDATED_LOCKFILE, remova o arquivo pnpm-lock.yaml antigo do repositório GitHub e faça commit. Este pacote não inclui pnpm-lock.yaml e usa apenas express e openai. Depois, na Vercel, faça Redeploy. Se o painel oferecer a opção, marque Clear Build Cache.
+
+
+PIX NO PRÓPRIO SITE:
+A recarga usa POST https://api.mercadopago.com/v1/payments com payment_method_id=pix e X-Idempotency-Key. O site não manda o cliente para checkout externo. O cliente informa o e-mail, recebe QR Code e Pix Copia e Cola na janela do PixelIA e o navegador consulta o status no servidor a cada 5 segundos. O servidor consulta o pagamento na API autenticada do Mercado Pago e valida referência, dispositivo, quantidade e valor antes de devolver a aprovação. A tela mantém o Pix pendente salvo no dispositivo para retomar a consulta se a pessoa recarregar a página.
