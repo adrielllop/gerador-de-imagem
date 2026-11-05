@@ -1,37 +1,37 @@
-PIXELIA 2.0 — HUGGING FACE + PIX MERCADO PAGO
+PIXELIA 2.1 — HUGGING FACE + PIX MERCADO PAGO
 
-ARQUIVOS:
 Todos os 7 arquivos ficam juntos na raiz, sem subpastas.
 
+IMPORTANTE: esta versão usa index.js como entrada Express da Vercel. Não existe server.js nesta versão.
+
 VARIÁVEIS DA VERCEL:
-1. HF_TOKEN = seu token Fine-grained do Hugging Face, com a permissão Inference.
-2. MERCADOPAGO_ACCESS_TOKEN = seu Access Token do Mercado Pago (manter o mesmo).
+1. HF_TOKEN = token Hugging Face Fine-grained com permissão Inference.
+2. MERCADOPAGO_ACCESS_TOKEN = Access Token Mercado Pago.
 
-REMOVER:
-- OPENAI_API_KEY (não é mais usada)
-- OPENAI_IMAGE_MODEL (não é mais usada)
+REMOVA:
+- OPENAI_API_KEY
+- OPENAI_IMAGE_MODEL
 
-PUBLICAÇÃO:
-1. Extraia o ZIP.
-2. No GitHub, substitua os arquivos antigos pelos 7 arquivos desta versão.
-3. Exclua também pnpm-lock.yaml e package-lock.json antigos, se existirem, para evitar lockfile desatualizado.
-4. Faça commit das alterações.
-5. Na Vercel, configure HF_TOKEN e mantenha MERCADOPAGO_ACCESS_TOKEN.
-6. Faça Redeploy com Clear Build Cache, se disponível.
+ATUALIZAÇÃO:
+1. Extraia este ZIP.
+2. No GitHub, substitua os arquivos antigos por TODOS os arquivos deste ZIP.
+3. Apague server.js antigo, se ainda existir no repositório.
+4. Apague pnpm-lock.yaml e package-lock.json antigos, se existirem.
+5. Confirme que index.js está na raiz, no mesmo nível de package.json.
+6. Faça commit.
+7. Na Vercel, confirme Root Directory = ./ (raiz do repositório).
+8. Configure HF_TOKEN e mantenha MERCADOPAGO_ACCESS_TOKEN.
+9. Faça Redeploy com Clear Build Cache.
+10. Depois do deploy, abra https://SEU-SITE/api/version. Deve aparecer version pixelia-hf-2.1 e provider huggingface.
 
 GERAÇÃO:
-- O servidor usa @huggingface/inference e o modelo black-forest-labs/FLUX.1-dev.
-- O token fica somente no servidor, nunca no navegador.
-- Os formatos quadrado/retrato/paisagem são enviados com dimensões adequadas.
-- Um crédito só é descontado no navegador quando a imagem é retornada com sucesso.
+Usa @huggingface/inference e black-forest-labs/FLUX.1-dev. Token somente no servidor. Créditos locais são descontados somente quando a geração retorna imagem.
+
+LIMITES:
+Hugging Face Inference Providers não é ilimitado gratuito; pode haver limites/créditos e cobranças.
 
 PAGAMENTOS:
-- A integração Pix do Mercado Pago foi mantida como estava nesta versão.
-- A variável MERCADOPAGO_ACCESS_TOKEN continua necessária.
-- A interface de recarga ainda pede e-mail do pagador, pois a implementação atual da cobrança Pix usa esse campo.
-
-LIMITES E CUSTOS:
-O token Hugging Face não significa geração ilimitada gratuita. Inference Providers podem ter créditos gratuitos limitados e cobrar conforme o provedor/modelo. Verifique o saldo e a política de uso na sua conta Hugging Face antes de vender créditos aos clientes.
+A integração Pix do Mercado Pago foi mantida. O formulário ainda pede e-mail porque a criação Pix desta implementação envia payer.email.
 
 SEGURANÇA:
-Nunca coloque HF_TOKEN ou MERCADOPAGO_ACCESS_TOKEN no app.js, index.html ou em arquivos públicos. Cadastre os tokens somente em Environment Variables da Vercel.
+Não coloque HF_TOKEN ou MERCADOPAGO_ACCESS_TOKEN em HTML/JS. Cadastre apenas nas Environment Variables da Vercel.
