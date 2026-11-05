@@ -28,3 +28,9 @@ Se a Vercel mostrar ERR_PNPM_OUTDATED_LOCKFILE, remova o arquivo pnpm-lock.yaml 
 
 PIX NO PRÓPRIO SITE:
 A recarga usa POST https://api.mercadopago.com/v1/payments com payment_method_id=pix e X-Idempotency-Key. O site não manda o cliente para checkout externo. O cliente informa o e-mail, recebe QR Code e Pix Copia e Cola na janela do PixelIA e o navegador consulta o status no servidor a cada 5 segundos. O servidor consulta o pagamento na API autenticada do Mercado Pago e valida referência, dispositivo, quantidade e valor antes de devolver a aprovação. A tela mantém o Pix pendente salvo no dispositivo para retomar a consulta se a pessoa recarregar a página.
+
+CORREÇÃO DA VERIFICAÇÃO PIX:
+Esta versão corrige dois erros que deixavam o pagamento preso em 'Verificando': o navegador enviava o identificador com o nome de campo incorreto e a validação numérica do ID no servidor estava escapada incorretamente. Atualize app.js e server.js no GitHub e faça Redeploy. O Pix que já foi pago poderá ser consultado novamente se a janela/pedido pendente ainda estiver salvo no mesmo navegador.
+
+E-MAIL DO PAGADOR:
+A integração direta atual usa a Payments API do Mercado Pago, cuja documentação exige payer.email ao criar o Pix. Por isso o campo de e-mail permanece no formulário. A verificação posterior é automática pela consulta do ID do pagamento e não depende de abrir e-mail nem de clicar em link recebido.
