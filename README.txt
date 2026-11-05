@@ -1,36 +1,37 @@
-PIXELIA — VERSÃO COM CRÉDITOS SALVOS POR DISPOSITIVO
+PIXELIA 2.0 — HUGGING FACE + PIX MERCADO PAGO
 
-Somente DUAS chaves secretas obrigatórias:
-1. OPENAI_API_KEY
-2. MERCADOPAGO_ACCESS_TOKEN
+ARQUIVOS:
+Todos os 7 arquivos ficam juntos na raiz, sem subpastas.
+
+VARIÁVEIS DA VERCEL:
+1. HF_TOKEN = seu token Fine-grained do Hugging Face, com a permissão Inference.
+2. MERCADOPAGO_ACCESS_TOKEN = seu Access Token do Mercado Pago (manter o mesmo).
+
+REMOVER:
+- OPENAI_API_KEY (não é mais usada)
+- OPENAI_IMAGE_MODEL (não é mais usada)
 
 PUBLICAÇÃO:
-1. Envie todos os arquivos da raiz para o GitHub.
-2. Importe o repositório na Vercel.
-3. Em Settings > Environment Variables, adicione OPENAI_API_KEY e MERCADOPAGO_ACCESS_TOKEN.
-4. 5. Faça Redeploy.
-6. Configure o webhook Mercado Pago para https://SEU-DOMINIO/api/webhook.
+1. Extraia o ZIP.
+2. No GitHub, substitua os arquivos antigos pelos 7 arquivos desta versão.
+3. Exclua também pnpm-lock.yaml e package-lock.json antigos, se existirem, para evitar lockfile desatualizado.
+4. Faça commit das alterações.
+5. Na Vercel, configure HF_TOKEN e mantenha MERCADOPAGO_ACCESS_TOKEN.
+6. Faça Redeploy com Clear Build Cache, se disponível.
 
-CARTEIRA:
-O saldo e a lista de pagamentos já resgatados ficam no armazenamento local do navegador (localStorage). Não há cadastro, login nem Supabase. O saldo fica naquele navegador/dispositivo. Se limpar os dados do navegador, trocar de navegador ou aparelho, o saldo não acompanha.
+GERAÇÃO:
+- O servidor usa @huggingface/inference e o modelo black-forest-labs/FLUX.1-dev.
+- O token fica somente no servidor, nunca no navegador.
+- Os formatos quadrado/retrato/paisagem são enviados com dimensões adequadas.
+- Um crédito só é descontado no navegador quando a imagem é retornada com sucesso.
 
-PAGAMENTO:
-O site cria Checkout Pro com a API do Mercado Pago. Quando o cliente volta ao site, o servidor consulta o pagamento diretamente na API e só devolve créditos se o status estiver approved, o valor corresponder à recarga e a referência indicar o dispositivo que iniciou a compra. Quantidades inteiras de 1 a 10.000. Descontos: 1–9 sem desconto; 10–24 5%; 25–49 8%; 50–99 12%; 100+ 15%.
+PAGAMENTOS:
+- A integração Pix do Mercado Pago foi mantida como estava nesta versão.
+- A variável MERCADOPAGO_ACCESS_TOKEN continua necessária.
+- A interface de recarga ainda pede e-mail do pagador, pois a implementação atual da cobrança Pix usa esse campo.
 
-LIMITAÇÃO IMPORTANTE:
-Como você escolheu armazenar créditos somente no dispositivo e não usar banco de dados, o saldo local pode ser apagado ou manipulado pelo próprio usuário. A lista de pagamentos resgatados também é local; não existe uma base central para impedir tentativas avançadas de reutilização de comprovantes em outros navegadores. Isso é uma solução simples para protótipo/baixo risco, não uma carteira antifraude para operação comercial de grande escala.
+LIMITES E CUSTOS:
+O token Hugging Face não significa geração ilimitada gratuita. Inference Providers podem ter créditos gratuitos limitados e cobrar conforme o provedor/modelo. Verifique o saldo e a política de uso na sua conta Hugging Face antes de vender créditos aos clientes.
 
-Nunca exponha as chaves no HTML/JavaScript. Use somente variáveis de ambiente da Vercel.
-
-CORREÇÃO DO ERRO PNPM:
-Se a Vercel mostrar ERR_PNPM_OUTDATED_LOCKFILE, remova o arquivo pnpm-lock.yaml antigo do repositório GitHub e faça commit. Este pacote não inclui pnpm-lock.yaml e usa apenas express e openai. Depois, na Vercel, faça Redeploy. Se o painel oferecer a opção, marque Clear Build Cache.
-
-
-PIX NO PRÓPRIO SITE:
-A recarga usa POST https://api.mercadopago.com/v1/payments com payment_method_id=pix e X-Idempotency-Key. O site não manda o cliente para checkout externo. O cliente informa o e-mail, recebe QR Code e Pix Copia e Cola na janela do PixelIA e o navegador consulta o status no servidor a cada 5 segundos. O servidor consulta o pagamento na API autenticada do Mercado Pago e valida referência, dispositivo, quantidade e valor antes de devolver a aprovação. A tela mantém o Pix pendente salvo no dispositivo para retomar a consulta se a pessoa recarregar a página.
-
-CORREÇÃO DA VERIFICAÇÃO PIX:
-Esta versão corrige dois erros que deixavam o pagamento preso em 'Verificando': o navegador enviava o identificador com o nome de campo incorreto e a validação numérica do ID no servidor estava escapada incorretamente. Atualize app.js e server.js no GitHub e faça Redeploy. O Pix que já foi pago poderá ser consultado novamente se a janela/pedido pendente ainda estiver salvo no mesmo navegador.
-
-E-MAIL DO PAGADOR:
-A integração direta atual usa a Payments API do Mercado Pago, cuja documentação exige payer.email ao criar o Pix. Por isso o campo de e-mail permanece no formulário. A verificação posterior é automática pela consulta do ID do pagamento e não depende de abrir e-mail nem de clicar em link recebido.
+SEGURANÇA:
+Nunca coloque HF_TOKEN ou MERCADOPAGO_ACCESS_TOKEN no app.js, index.html ou em arquivos públicos. Cadastre os tokens somente em Environment Variables da Vercel.
